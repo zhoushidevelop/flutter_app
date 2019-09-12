@@ -2,12 +2,12 @@ import 'package:event_bus/event_bus.dart';
 
 EventBus eventBus = EventBus();
 
-class login {}
+class Login {}
 
-class logout {}
+class Logout {}
 
-class switchFavorite {}
+class SwitchFavorite {}
 
-class todo {}
+class Todo {}
 
-class todoDel {}
+class TodoDel {}

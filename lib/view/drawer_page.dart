@@ -24,7 +24,7 @@ class DrawerState extends State {
   @override
   void initState() {
     super.initState();
-    loginSubscription = eventBus.on<login>().listen((data) {
+    loginSubscription = eventBus.on<Login>().listen((data) {
       refreshUser();
     });
     refreshUser();
