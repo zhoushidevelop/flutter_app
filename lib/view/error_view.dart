@@ -5,7 +5,7 @@ class ErrorView extends StatelessWidget {
   final Function retry;
   final String defaultErrorMsg = '默认错误说明';
 
-  ErrorView(this.error, this.retry);
+  ErrorView({this.error, this.retry});
 
   @override
   Widget build(BuildContext context) {

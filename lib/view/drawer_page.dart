@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/config/event.dart';
 import 'package:flutter_app/utils/account_util.dart';
 import 'package:flutter_app/utils/hint_util.dart';
@@ -53,14 +54,9 @@ class DrawerState extends State {
             }
           },
           child: Container(
-            color: Theme
-                .of(context)
-                .primaryColor,
+            color: Theme.of(context).primaryColor,
             height: 180,
-            padding: EdgeInsets.only(top: MediaQuery
-                .of(context)
-                .padding
-                .top),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -116,6 +112,13 @@ class DrawerState extends State {
     } else {
       return getItem('ic_logout', '退出登录', () {
         HintUtil.alert(context, '退出登录', '确定要退出吗？', () {
+          Apis.logout().then((res) {
+            logout();
+          }).catchError((e) {
+            HintUtil.toast(context, e.toString());
+          }).whenComplete(() {
+            NavUtil.pop(context);
+          });
           HintUtil.toast(context, '退出登录成功');
         }, () {
           NavUtil.pop(context);
@@ -129,8 +132,18 @@ class DrawerState extends State {
     super.dispose();
     loginSubscription.cancel();
   }
-}
 
+  void logout() async {
+    await AccountUtil.removeUser();
+    await AccountUtil.removeCookie();
+    HintUtil.toast(context, '已退出登录');
+    setState(() {
+      _userName = '';
+    });
+
+    eventBus.fire(Logout());
+  }
+}
 
 getItem(imageName, title, onTap) {
   return ListTile(
@@ -144,5 +157,3 @@ getItem(imageName, title, onTap) {
     onTap: onTap,
   );
 }
-
-

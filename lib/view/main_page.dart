@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/utils/hint_util.dart';
 import 'package:flutter_app/utils/image_util.dart';
 import 'package:flutter_app/utils/nav_util.dart';
+import 'package:flutter_app/view/wechat_page.dart';
 
 import 'drawer_page.dart';
 import 'home_page.dart';
+import 'knowledge_tree_page.dart';
+import 'navigation_page.dart';
+import 'project_page.dart';
 import 'search_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -16,20 +20,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State {
   int _selectIndex = 0;
+
   final _pages = [
     HomePage(),
-    HomePage(),
-    HomePage(),
-    HomePage(),
-    HomePage(),
+    WeChatPage(),
+    ProjectPage(),
+    NavigationPage(),
+    KnowledgeTreePage(),
   ];
 
   final _bottomItems = [
     _Item('首页', 'ic_home'),
-    _Item('首页', 'ic_home'),
-    _Item('首页', 'ic_home'),
-    _Item('首页', 'ic_home'),
-    _Item('首页', 'ic_home'),
+    _Item('公众号', 'ic_wechat'),
+    _Item('项目', 'ic_project'),
+    _Item('网站导航', 'ic_navigation'),
+    _Item('知识体系', 'ic_dashboard'),
   ];
 
   List<BottomNavigationBarItem> bottomItemList;
@@ -101,7 +106,11 @@ class _MainPageState extends State {
             },
           ),
           body: PageView(
-            children: _pages,
+//            children: _pages.children,
+            children: IndexedStack(
+              index: _selectIndex,
+              children: _pages,
+            ).children,
             controller: _pageController,
             physics: NeverScrollableScrollPhysics(),
           ),
@@ -118,6 +127,8 @@ class _MainPageState extends State {
         });
   }
 }
+
+
 
 class _Item {
   String name;

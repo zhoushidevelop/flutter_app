@@ -33,8 +33,8 @@ class HomePage extends StatelessWidget {
         if (item is List) {
           return HomeBanner(
             item,
-            (item) {
-              NavUtil.navToWeb(context, item['url'], item['title']);
+            (item, con) {
+              NavUtil.navToWeb(con, item['url'], item['title']);
             },
           );
         } else {
@@ -45,6 +45,9 @@ class HomePage extends StatelessWidget {
               break;
             case Tags.normal:
               return ArticleItemView(item);
+              break;
+            default:
+              return Container();
               break;
           }
         }

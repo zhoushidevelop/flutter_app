@@ -1,49 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/api/api.dart';
-import 'package:flutter_app/config/event.dart';
-import 'package:flutter_app/utils/account_util.dart';
 import 'package:flutter_app/utils/hint_util.dart';
 import 'package:flutter_app/utils/nav_util.dart';
 
-import 'regist_page.dart';
-
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _LoginPageState();
+    return _RegisterPageState();
   }
 }
 
-class _LoginPageState extends State {
+class _RegisterPageState extends State {
   final formKey = GlobalKey<FormState>();
-  var _userName, _password;
+  var _userName, _password, _passwordAgain;
   bool _isLoading = false;
-
-  _login() {
-    final formState = formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      setState(() {
-        _isLoading = true;
-      });
-      Apis.login(_userName, _password).then((result) {
-        loginSuccess(result);
-      }).catchError((e) {
-        HintUtil.toast(context, e.toString());
-      }).whenComplete(() {
-        setState(() {
-          _isLoading = false;
-        });
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('登录'),
+        title: Text('注册'),
       ),
       body: ListView(
         children: <Widget>[
@@ -57,12 +33,9 @@ class _LoginPageState extends State {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       TextFormField(
-                        validator: (value) {
-                          return value.isEmpty ? '用户名不能为空...' : null;
-                        },
-                        onSaved: (value) {
-                          _userName = value;
-                        },
+                        validator: (value) =>
+                            value.isEmpty ? '用户名不能为空...' : null,
+                        onSaved: (value) => _userName = value,
                         decoration: InputDecoration(
                           icon: Icon(Icons.person),
                           hintText: '请输入用户名',
@@ -72,16 +45,26 @@ class _LoginPageState extends State {
                       Container(
                         margin: EdgeInsets.only(top: 10),
                         child: TextFormField(
-                          validator: (value) {
-                            return value.isEmpty ? '密码不能为空...' : null;
-                          },
-                          onSaved: (value) {
-                            _password = value;
-                          },
+                          validator: (value) =>
+                              value.isEmpty ? '密码不能为空...' : null,
+                          onSaved: (value) => _password = value,
                           decoration: InputDecoration(
                             icon: Icon(Icons.vpn_key),
                             hintText: '请输入密码',
                             labelText: '密码',
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: TextFormField(
+                          validator: (value) =>
+                              value.isEmpty ? '请确认密码...' : null,
+                          onSaved: (value) => _passwordAgain = value,
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.vpn_key),
+                            hintText: '请再次输入密码',
+                            labelText: '确认密码',
                           ),
                         ),
                       ),
@@ -93,46 +76,60 @@ class _LoginPageState extends State {
                             width: 200,
                             height: 45,
                             child: RaisedButton(
-                              child: Text(
-                                _isLoading ? '登录中...' : '登录',
-                              ),
-                              onPressed: _isLoading ? null : _login,
+                              child: Text(_isLoading ? '注册中...' : '注册'),
+                              onPressed: _isLoading ? null : _register,
                               textColor: Colors.white,
+                              disabledTextColor: Colors.white,
                               color: Theme.of(context).primaryColor,
                               disabledColor: Colors.grey,
-                              disabledTextColor: Colors.white,
                             ),
                           ),
                         ),
                       ),
                       InkWell(
                         onTap: () {
-                          NavUtil.navTo(context, RegisterPage());
+                          NavUtil.pop(context);
                         },
                         child: Container(
                           margin: EdgeInsets.only(top: 20),
                           child: Text(
-                            '还没有账号？点击去注册',
+                            '已经有账号？点击去登录',
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 )),
-          ),
+          )
         ],
       ),
     );
   }
 
-  void loginSuccess(result) async {
-    await AccountUtil.saveUserName(result['nickname']);
-    HintUtil.toast(context, '登录成功');
-    eventBus.fire(Login());
-    NavUtil.pop(context);
+  _register() {
+    final formState = formKey.currentState;
+    if (formState.validate()) {
+      formState.save();
+      if (_passwordAgain != _password) {
+        HintUtil.toast(context, '两次密码不一致...');
+      } else {
+        setState(() {
+          _isLoading = true;
+        });
+        Apis.register(_userName, _password, _passwordAgain).then((result) {
+          HintUtil.toast(context, '注册成功');
+          NavUtil.pop(context);
+        }).catchError((e) {
+          HintUtil.toast(context, e.toString());
+        }).whenComplete(() {
+          setState(() {
+            _isLoading = false;
+          });
+        });
+      }
+    }
   }
 }
-

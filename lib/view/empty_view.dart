@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class EmptyView extends StatelessWidget {
   final Function retry;
 
-  EmptyView(this.retry);
+  EmptyView({this.retry});
 
   @override
   Widget build(BuildContext context) {
