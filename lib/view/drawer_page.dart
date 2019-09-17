@@ -8,8 +8,10 @@ import 'package:flutter_app/utils/hint_util.dart';
 import 'package:flutter_app/utils/image_util.dart';
 import 'package:flutter_app/utils/nav_util.dart';
 
+import 'about_page.dart';
 import 'favorite_page.dart';
 import 'login_page.dart';
+import 'todo_page.dart';
 
 class DrawerPage extends StatefulWidget {
   @override
@@ -84,10 +86,10 @@ class DrawerState extends State {
                 loginOrDirect(FavoritePage());
               }),
               getItem('ic_todo', '任务清单', () {
-                loginOrDirect(FavoritePage());
+                loginOrDirect(TodoPage());
               }),
               getItem('ic_about', '关于', () {
-                loginOrDirect(FavoritePage());
+                loginOrDirect(AboutPage());
               }),
               getlogout(),
             ],
@@ -144,6 +146,10 @@ class DrawerState extends State {
     eventBus.fire(Logout());
   }
 }
+
+
+
+
 
 getItem(imageName, title, onTap) {
   return ListTile(

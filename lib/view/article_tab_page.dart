@@ -12,8 +12,9 @@ import 'package:flutter_app/view/refreshable_list.dart';
 class ArticleTabPage extends StatefulWidget {
   Future api;
   List data;
+  int initPos;
 
-  ArticleTabPage(this.api, this.data);
+  ArticleTabPage(this.api, this.data, {this.initPos = 1});
 
   @override
   State<StatefulWidget> createState() {
@@ -46,6 +47,7 @@ class _ArticleTabPageState extends State<ArticleTabPage> {
 
     return DefaultTabController(
       length: data.length,
+      initialIndex: widget.initPos,
       child: Column(
         key: null,
         crossAxisAlignment: CrossAxisAlignment.stretch,
